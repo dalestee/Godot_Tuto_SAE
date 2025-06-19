@@ -1,0 +1,6 @@
+Titre 1, Description de la partie 1
+"Cliquer ici", Bouton1
+"Ensuite ça", Bouton2
+
+Titre 2, Description de la partie 2
+"Encore un clic", Bouton3

@@ -47,12 +47,11 @@ func _ready():
 
 	# Add the HBox to the VBox
 	vbox.add_child(hbox)
-	hide()
 
 func calculate_position() -> Vector2:
 	if target_node:
 		var global_pos = target_node.get_global_rect().position
-		return global_pos + Vector2(0, target_node.size.y + 10)
+		return global_pos + Vector2(target_node.size.x + 10, 10)
 	return Vector2(100, 100)
 
 func _on_next_pressed():

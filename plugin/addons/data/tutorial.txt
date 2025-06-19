@@ -1,0 +1,12 @@
+Tutorial Roll A Ball
+In this tutorial, you will learn how to create a basic game with a ball rolling on the ground that you will be able to control with your keyboard
+
+Create the ground, In this part you will have to create the ground 
+"Add a StaticBody3D", Scene
+"Rename it 'Ground'", Scene
+"Add a MeshInstance3D in the 'Ground' Node", Scene
+"Add a CollisionShape3D in the 'Ground' Node", Scene
+
+Part Title 2, Part Description
+"Step 1 part 2 description", Script
+"Step 2 part 2 description", AssetLib

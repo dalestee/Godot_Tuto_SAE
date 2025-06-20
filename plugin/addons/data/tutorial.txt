@@ -7,6 +7,10 @@ Create the ground, In this part you will have to create the ground
 "Add a MeshInstance3D in the 'Ground' Node", Scene
 "Add a CollisionShape3D in the 'Ground' Node", Scene
 
-Part Title 2, Part Description
-"Step 1 part 2 description", Script
-"Step 2 part 2 description", AssetLib
+Create the player movements, In this part you will add the movements of the player
+"Click On Project", Settings
+"Click On Project settings", Settings
+"On Control section, add the move action", Settings
+"Assign the touch to the actions", Settings
+
+Create the materials, In this part you will create material

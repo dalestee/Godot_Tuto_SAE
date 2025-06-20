@@ -6,3 +6,9 @@
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Score: 0"
+
+[node name="MissesLabel" type="Label" parent="."]
+offset_top = 24.0
+offset_right = 85.0
+offset_bottom = 47.0
+text = "Misses: 0/3"

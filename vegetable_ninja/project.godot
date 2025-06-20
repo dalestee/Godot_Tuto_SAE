@@ -13,5 +13,5 @@ config_version=5
 config/name="vegetable_ninja"
 run/main_scene="res://scenes/main.tscn"
 run/disable_stdout=true
-config/features=PackedStringArray("4.1", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"

@@ -13,7 +13,7 @@ func _enter_tree():
 	dock_instance.show()
 	base_ui = get_editor_interface().get_base_control()
 	var loader = preload("res://addons/tutorial/src/tutorial/TutorialLoader.gd").new()
-	tutorial = loader.load_tutorial("res://addons/tutorial/data/tutorial_roll_a_ball.txt")
+	tutorial = loader.load_tutorial("res://addons/tutorial/data/tutorial_vegetable.txt")
 	_show_next_popup()
 
 func _show_next_popup():

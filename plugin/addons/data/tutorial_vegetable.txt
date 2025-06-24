@@ -1,0 +1,2 @@
+Tutorial Vegetable Ninja
+In this tutorial, you will learn how to create a basic Fruit Ninja clone that will use the mouse to slash the fruits

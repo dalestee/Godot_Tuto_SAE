@@ -1,9 +1,9 @@
 # File: res://addons/tuto/TutorialLoader.gd
 extends Node
 
-const Tutorial := preload("res://addons/src/tutorial/Tutorial.gd")
-const TutorialPart := preload("res://addons/src/tutorial/TutorialPart.gd")
-const TutorialStep := preload("res://addons/src/tutorial/TutorialStep.gd")
+const Tutorial := preload("res://addons/tutorial/src/tutorial/Tutorial.gd")
+const TutorialPart := preload("res://addons/tutorial/src/tutorial/TutorialPart.gd")
+const TutorialStep := preload("res://addons/tutorial/src/tutorial/TutorialStep.gd")
 
 func load_tutorial(file_path: String) -> Tutorial:
 	var file := FileAccess.open(file_path, FileAccess.READ)

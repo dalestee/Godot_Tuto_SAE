@@ -2,7 +2,7 @@
 class_name Tutorial
 extends RefCounted
 
-const TutorialPart := preload("res://addons/src/tutorial/TutorialPart.gd")
+const TutorialPart := preload("res://addons/tutorial/src/tutorial/TutorialPart.gd")
 
 var title: String = ""
 var description: String = ""

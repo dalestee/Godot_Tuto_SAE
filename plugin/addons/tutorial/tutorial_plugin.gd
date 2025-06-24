@@ -8,12 +8,12 @@ var base_ui: Control
 var popups: Array = []
 
 func _enter_tree():
-	dock_instance = preload("res://addons/src/ui/DockScene.tscn").instantiate()
+	dock_instance = preload("res://addons/tutorial/src/ui/DockScene.tscn").instantiate()
 	add_control_to_dock(DOCK_SLOT_LEFT_UL, dock_instance)
 	dock_instance.show()
 	base_ui = get_editor_interface().get_base_control()
-	var loader = preload("res://addons/src/tutorial/TutorialLoader.gd").new()
-	tutorial = loader.load_tutorial("res://addons/data/tutorial.txt")
+	var loader = preload("res://addons/tutorial/src/tutorial/TutorialLoader.gd").new()
+	tutorial = loader.load_tutorial("res://addons/tutorial/data/tutorial_roll_a_ball.txt")
 	_show_next_popup()
 
 func _show_next_popup():

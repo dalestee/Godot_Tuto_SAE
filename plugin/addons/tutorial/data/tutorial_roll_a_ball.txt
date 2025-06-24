@@ -1,0 +1,33 @@
+Tutorial Roll A Ball
+In this tutorial, you will learn how to create a basic game with a ball rolling on the ground that you will be able to control with your keyboard
+
+Project bases, In this part you will have to create the scene the ground and the player
+"Create a 3D scene", Scene
+"Add a StaticBody3D node", Scene
+"Rename it 'Ground'", Scene
+"Add a MeshInstance3D node in the 'Ground' node", Scene
+"Change its size to (2, 1, 2)", Inspector
+"Add a CollisionShape3D node in the 'Ground' Node", Scene
+"Set the Shape attribute to BoxShape", Inspector
+"Add a KinematicBody3D node", Scene
+"Rename it 'Player'", Scene
+"Add a MeshInstance3D node in the 'Player' Node", Scene
+"Set the Mesh attribute to SphereMesh", Inspector
+"Add a CollisionShape3D in the 'Player' Node", Scene
+"Set the Shape attribute to SphereShape", Inspector
+
+Camera, In this part you will have to create a Camera that follows the Player
+"Add a Camera node in the 'Player' Node", Scene
+"? Set the Position of the Camera to (-10, 0, 0)", Inspector
+"? Set the Rotation of the Camera to (-15, 0, 0)", Inspector
+
+Player movements, In this part you will add controls to the Player
+"Click On Project", Settings
+"Click On Project settings", Settings
+"On Control section, add the move action", Settings
+"Assign the touch to the actions", Settings
+"Click on the Player node and then click on Attach Node Script", Scene
+"? Create the Node Script", Create
+
+Create the materials, In this part you will create material
+"jsp", Scene

@@ -1,2 +1,43 @@
-Tutorial Vegetable Ninja
-In this tutorial, you will learn how to create a basic Fruit Ninja clone that will use the mouse to slash the fruits
+In this tutorial, you will learn how to create a Vegetable Ninja game, where players slice vegetables using their mouse.
+
+Create the vegetable scene:
+"Add a RigidBody2D", Scene
+"Rename it 'Vegetable'", Scene
+"Add a Sprite2D in the 'Vegetable' Node", Scene
+"Add a CollisionShape2D in the 'Vegetable' Node", Scene
+"Add an Area2D in the 'Vegetable' Node", Scene
+"Add a CollisionShape2D as a child of the Area2D", Scene
+
+Create the sliced vegetable pieces:
+"Add a RigidBody2D", Scene
+"Rename it 'SlicedVegetable'", Scene
+"Add a Sprite2D in the 'SlicedVegetable' Node", Scene
+"Add a CollisionShape2D in the 'SlicedVegetable' Node", Scene
+
+Implement vegetable slicing logic:
+"Attach a script to 'Vegetable' Node", Code
+"Handle the slicing action and emit a signal when sliced", Code
+"Instance 'SlicedVegetable' pieces upon slicing", Code
+"Assign appropriate textures to the pieces based on the vegetable type", Code
+
+Create the main game scene:
+"Add a Node2D", Scene
+"Rename it 'Main'", Scene
+"Add a Timer and name it 'SpawnTimer'", Scene
+"Add a Line2D for swipe trails", Scene
+"Instance and position vegetables at random intervals", Code
+"Handle player input to detect swipe gestures", Code
+
+Add bombs:
+"Duplicate the Vegetable scene and rename it 'Bomb'", Scene
+"Change the texture to a bomb image", Scene
+"Attach a script to the 'Bomb' Node", Code
+"Handle the game-over logic when the bomb is sliced", Code
+
+Implement scoring and UI:
+"Create a CanvasLayer for UI", Scene
+"Add a Label for the score display", Scene
+"Update the score when vegetables are sliced", Code
+"Display a game-over message when the game ends", Code
+
+You're all set to create your Vegetable Ninja game!

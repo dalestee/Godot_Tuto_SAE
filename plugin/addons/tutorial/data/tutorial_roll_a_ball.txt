@@ -22,7 +22,7 @@ Camera, In this part you will have to create a Camera that follows the Player
 "? Set the Rotation of the Camera to (-15, 0, 0)", Inspector
 
 Player movements, In this part you will add controls to the Player
-"Click On Project", Settings
+"Click On Project", Project
 "Click On Project settings", Settings
 "On Control section, add the move action", Settings
 "Assign the touch to the actions", Settings

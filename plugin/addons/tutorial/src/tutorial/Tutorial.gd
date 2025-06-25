@@ -8,6 +8,7 @@ var title: String = ""
 var description: String = ""
 var parts: Array[TutorialPart] = []
 var current_part_idx: int = 0
+var started: bool = false
 
 func _init(tutorial_title: String = "", tutorial_description: String = ""):
 	title = tutorial_title
@@ -19,11 +20,14 @@ func get_part(index: int) -> TutorialPart:
 		return parts[index]
 	return null
 
+func get_current_part() -> TutorialPart:
+	return get_part(current_part_idx)
+
 func parts_count() -> int:
 	return parts.size()
 
 func get_current_step() -> TutorialStep:
-	var part = get_part(current_part_idx)
+	var part = get_current_part()
 	if not part:
 		return null
 	return part.get_current_step()
@@ -32,6 +36,7 @@ func get_current_step() -> TutorialStep:
 # - true if moved to next step or part
 # - false if tutorial finished
 func next_step() -> TutorialStep:
+	started = true
 	var part = get_part(current_part_idx)
 	if not part:
 		return null

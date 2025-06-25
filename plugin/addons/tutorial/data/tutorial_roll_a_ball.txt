@@ -3,9 +3,6 @@ In this tutorial, you will learn how to create a basic game with a ball rolling 
 
 Project bases, In this part you will have to create the scene the ground and the player
 "Create a 3D scene", Scene
-```
-code example
-```
 "Add a StaticBody3D node", Scene
 "Rename it 'Ground'", Scene
 "Add a MeshInstance3D node in the 'Ground' node", Scene

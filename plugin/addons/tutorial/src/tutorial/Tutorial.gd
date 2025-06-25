@@ -3,6 +3,8 @@ class_name Tutorial
 extends RefCounted
 
 const TutorialPart := preload("res://addons/tutorial/src/tutorial/TutorialPart.gd")
+const TutorialStep := preload("res://addons/tutorial/src/tutorial/TutorialStep.gd")
+
 
 var title: String = ""
 var description: String = ""

@@ -22,8 +22,16 @@ func load_tutorial(file_path: String) -> Tutorial:
 
 	var current_part: TutorialPart = null
 
-	while not file.eof_reached():
-		var line := file.get_line().strip_edges()
+	var pending_line = null
+
+	while not file.eof_reached() or pending_line != null:
+		var line := ""
+		if pending_line != null:
+			line = pending_line
+			pending_line = null
+		else:
+			line = file.get_line().strip_edges()
+
 		if line.is_empty():
 			continue
 
@@ -33,22 +41,25 @@ func load_tutorial(file_path: String) -> Tutorial:
 			if quote_end != -1 and current_part:
 				var step_desc := line.substr(1, quote_end - 1).strip_edges()
 				var step_target := line.substr(quote_end + 2).strip_edges()
-				
-				# Check if next line is a code block start ```
-				var code_block := ""
+
+				# Peek next line to check for code block start
 				if not file.eof_reached():
 					var next_line := file.get_line()
 					if next_line.strip_edges().begins_with("```"):
 						# Read until closing ```
+						var code_block := ""
 						while not file.eof_reached():
 							var code_line := file.get_line()
 							if code_line.strip_edges() == "```":
 								break
 							code_block += code_line + "\n"
-
-				var step := TutorialStep.new(step_desc, step_target, code_block.strip_edges())
-				current_part.steps.append(step)
-
+						var step := TutorialStep.new(step_desc, step_target, code_block.strip_edges())
+						current_part.steps.append(step)
+					else:
+						# No code block, so store this line to process next iteration
+						pending_line = next_line
+						var step := TutorialStep.new(step_desc, step_target, "")
+						current_part.steps.append(step)
 		else:
 			var fields := line.split(",", false)
 			if fields.size() >= 2:

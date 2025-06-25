@@ -34,7 +34,7 @@ func _on_timer_timeout():
 			var content = dock_instance.get_child(0)
 			if content:
 				content.custom_minimum_size.x = dock_width
-				
+
 func _show_next_popup():
 	var step = tutorial.next_step()
 	var part = tutorial.get_current_part()
@@ -81,11 +81,6 @@ func _dock_home():
 
 func _on_tutorial_button_pressed(file_path: String):
 	tutorial = loader.load_tutorial(file_path)
-	# Add layout
-	var vbox = VBoxContainer.new()
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	dock_instance.add_child(vbox)
-	
 	_show_dock_infos()
 	
 func _dock_tutorial():

@@ -1,0 +1,136 @@
+Tutorial Roll A Ball Test
+In this tutorial, you will learn how to create a basic game with a ball rolling on the ground that you will be able to control with your keyboard
+
+Project bases, In this part you will have to create the scene, the ground and the player
+"Create a 3D scene", Scene
+"Add a StaticBody3D node", Scene
+"Rename it 'Ground'", Scene
+"Add a MeshInstance3D node as a child of the 'Ground' node", Scene
+"Add a CollisionShape3D node as a child of the 'Ground' node", Scene
+"Set the Shape property to BoxShape", Inspector
+"Add a RigidBody3D node", Scene
+"Rename it 'Player'", Scene
+"Add a MeshInstance3D node as a child of the 'Player' node", Scene
+"Add a CollisionShape3D node as a child of the 'Player' node", Scene
+"Set the Shape property to SphereShape", Inspector
+
+Camera, In this part you will have to create a Camera that follows the Player
+"Add a Camera3D node as a child of the 'Player' node", Scene
+"? Set the Position of the Camera to (-10, 5, 0)", Inspector
+"? Set the Rotation of the Camera to (-15, 0, 0)", Inspector
+
+Player movements, In this part you will add controls to the Player
+"Click On Project", Project
+"Click On Project Settings", Settings
+"On Input Map tab, add actions: ui_up, ui_down, ui_left, ui_right", Settings
+"Assign keys (WASD / arrows) to these actions", Settings
+"Select the Player node and then click on Attach Script", Scene
+"? Create a new GDScript named PlayerController.gd (copy paste the code in the dock)", Create
+```
+extends RigidBody3D
+
+var speed := 10.0
+var input_vector := Vector2.ZERO
+
+func _physics_process(delta):
+	input_vector = Vector2.ZERO
+	if Input.is_action_pressed("ui_right"):
+	input_vector.x += 1
+	if Input.is_action_pressed("ui_left"):
+	input_vector.x -= 1
+	if Input.is_action_pressed("ui_up"):
+	input_vector.y -= 1
+	if Input.is_action_pressed("ui_down"):
+	input_vector.y += 1
+	if input_vector.length() > 0:
+		input_vector = input_vector.normalized()
+		var force = Vector3(input_vector.x, 0, input_vector.y) * speed
+		apply_central_force(force)
+```
+
+
+Create the materials, In this part you will create materials and assign them to Ground and Player
+"Create a new StandardMaterial3D resource for the Ground", Inspector
+"Set Albedo Color to (0.51, 0.51, 0.51) [RGB 130,130,130]", Inspector
+"Assign the material to the MeshInstance3D of the Ground", Scene
+"Create a new StandardMaterial3D resource for the Player", Inspector
+"Set Albedo Color to (0, 0.86, 1) [RGB 0,220,255]", Inspector
+"Set Metallic to 0.75 and Roughness to 0.75 (Smoothness 0.25)", Inspector
+"Assign the material to the MeshInstance3D of the Player", Scene
+
+Camera Follow Script, In this part you will create a script to make the Camera follow the Player with offset
+"Create a new Node3D called Scripts in the scene root", Scene
+"Attach a new script CameraController.gd to Scripts node", Create
+```
+extends Node3D
+
+@export var player: Node3D
+@export var camera: Camera3D
+
+var offset: Vector3
+
+func _ready():
+offset = camera.global_transform.origin - player.global_transform.origin
+
+func _process(delta):
+camera.global_transform.origin = player.global_transform.origin + offset
+```
+"Assign the Player node and the Camera3D node to the exported variables in the inspector", Inspector
+
+Create walls, In this part you will create walls to contain the playfield
+"Add a StaticBody3D node named WestWall", Scene
+"Add a MeshInstance3D as child of WestWall with CubeMesh", Scene
+"Set WestWall position to (-10, 1, 0) and scale to (0.5, 2, 20.5)", Inspector
+"Create a new StandardMaterial3D for Walls with Albedo color (0.31, 0.31, 0.31) [RGB 79,79,79]", Inspector
+"Assign this material to WestWall's MeshInstance3D", Scene
+"Duplicate WestWall for EastWall at (10, 1, 0)", Scene
+"Duplicate WestWall for NorthWall at (0, 1, -10) and rotate 90 degrees on Y axis", Scene
+"Duplicate WestWall for SouthWall at (0, 1, 10) and rotate 90 degrees on Y axis", Scene
+
+Create collectibles, In this part you will create pickups for the Player to collect
+"Add a StaticBody3D node named PickUp", Scene
+"Add a MeshInstance3D with CubeMesh as child of PickUp", Scene
+"Set PickUp position to (0, 0.5, 0), rotation to (45, 45, 45), scale to (0.5, 0.5, 0.5)", Inspector
+"Create a new StandardMaterial3D for PickUp with Albedo color (1, 0.78, 0) [RGB 255, 200, 0]", Inspector
+"Assign this material to PickUp's MeshInstance3D", Scene
+"Add an Area3D node as child of PickUp", Scene
+"Add a CollisionShape3D (BoxShape) to the Area3D", Scene
+"Enable Monitoring and set PickUp's CollisionShape as trigger", Inspector
+"Attach a new script Rotator.gd to PickUp", Create
+```
+extends Node3D
+
+func _process(delta):
+rotate_x(deg2rad(15 * delta))
+rotate_y(deg2rad(30 * delta))
+rotate_z(deg2rad(45 * delta))
+```
+
+Create Pickups spawner, In this part you will instantiate multiple pickups around the playfield
+"Create a new Node3D named PickupsSpawner", Scene
+"Attach a new script Pickups.gd to PickupsSpawner", Create
+```
+extends Node3D
+
+@export var pickup_scene: PackedScene
+var radius := 4.0
+
+func _ready():
+for i in 10:
+var angle = i * TAU / 10
+var x = radius * cos(angle)
+var z = radius * sin(angle)
+var instance = pickup_scene.instantiate()
+instance.position = Vector3(x, 0.5, z)
+add_child(instance)
+```
+"Assign the PickUp PackedScene to the exported pickup_scene property in the inspector", Inspector
+
+Detecting collisions with collectibles, In this part pickups will disappear when Player touches them
+"Add signal connection from PickUp Area3D's body_entered to PlayerController script on Player node", Scene
+"Add the following function to PlayerController.gd", Create
+```
+func _on_Area3D_body_entered(body):
+if body.name.begins_with("PickUp"):
+body.queue_free()
+```

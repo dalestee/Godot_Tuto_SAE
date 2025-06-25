@@ -43,3 +43,26 @@ func load_tutorial(file_path: String) -> Tutorial:
 
 	file.close()
 	return tutorial
+
+func list_all_tutorials() -> Dictionary:
+	var dir_path = "res://addons/tutorial/data"
+	var result := {}
+
+	var dir = DirAccess.open(dir_path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if not dir.current_is_dir() and file_name.ends_with(".txt"):
+				var full_path = dir_path + "/" + file_name
+				var file = FileAccess.open(full_path, FileAccess.READ)
+				if file:
+					var first_line = file.get_line()
+					result[full_path] = first_line
+					file.close()
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	else:
+		push_error("Failed to open directory: " + dir_path)
+
+	return result

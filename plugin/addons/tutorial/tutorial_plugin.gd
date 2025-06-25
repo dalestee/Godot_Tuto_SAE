@@ -1,9 +1,11 @@
 @tool
 extends EditorPlugin
 
+
 var dock_instance: Control
 var tutorial_dock: Control
 var tutorial: Tutorial
+var loader = preload("res://addons/tutorial/src/tutorial/TutorialLoader.gd").new()
 var base_ui: Control
 var popups: Array = []
 var timer: Timer
@@ -13,8 +15,6 @@ func _enter_tree():
 	add_control_to_dock(DOCK_SLOT_LEFT_UL, dock_instance)
 	dock_instance.show()
 	base_ui = get_editor_interface().get_base_control()
-	var loader = preload("res://addons/tutorial/src/tutorial/TutorialLoader.gd").new()
-	tutorial = loader.load_tutorial("res://addons/tutorial/data/tutorial_roll_a_ball.txt")
 	timer = Timer.new()
 	timer.wait_time = 0.05  # 50ms
 	timer.one_shot = false
@@ -38,12 +38,49 @@ func _show_next_popup():
 	base_ui.add_child(popup)
 	_show_dock_infos()
 	
-func _show_dock_infos():
-	# Clear old content
-	for child in dock_instance.get_children():
-		dock_instance.remove_child(child)
-		child.queue_free()
+func _dock_home():
+	var tutorials = loader.list_all_tutorials()
+	
+	# Add layout
+	var vbox = VBoxContainer.new()
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dock_instance.add_child(vbox)
+	
+	var title_label = Label.new()
+	title_label.text = "Here are the available tutorials"
+	title_label.add_theme_font_size_override("font_size", 18)
+	title_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	title_label.add_theme_font_override("font", get_editor_interface().get_base_control().get_theme_font("bold", "Label"))
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_child(title_label)
+	
+	for path in tutorials:
+		# Open file and read first line as title
+		var title = path.get_file().get_basename()
+		var file = FileAccess.open(path, FileAccess.READ)
+		if file:
+			if not file.eof_reached():
+				title = file.get_line()
+			file.close()
 
+		# Create and add the button
+		var button = Button.new()
+		button.text = title
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.pressed.connect(_on_tutorial_button_pressed.bind(path))
+		vbox.add_child(button)
+
+func _on_tutorial_button_pressed(file_path: String):
+	tutorial = loader.load_tutorial(file_path)
+	# Add layout
+	var vbox = VBoxContainer.new()
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dock_instance.add_child(vbox)
+	
+	_show_dock_infos()
+	
+func _dock_tutorial():
 	# Container with padding
 	var margin = MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 12)
@@ -63,14 +100,14 @@ func _show_dock_infos():
 	title_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_child(title_row)
 
-	#var back_button = Button.new()
-	#back_button.text = "←"
-	#back_button.tooltip_text = "Back"
-	#back_button.size_flags_horizontal = Control.SIZE_FILL
-	#back_button.focus_mode = Control.FOCUS_NONE
-	#back_button.custom_minimum_size = Vector2(24, 24)
-	#back_button.pressed.connect(_on_back_button_pressed)
-	#title_row.add_child(back_button)
+	var back_button = Button.new()
+	back_button.text = "←"
+	back_button.tooltip_text = "Back"
+	back_button.size_flags_horizontal = Control.SIZE_FILL
+	back_button.focus_mode = Control.FOCUS_NONE
+	back_button.custom_minimum_size = Vector2(24, 24)
+	back_button.pressed.connect(_on_back_button_pressed)
+	title_row.add_child(back_button)
 
 	var title_label = Label.new()
 	title_label.text = tutorial.title
@@ -129,9 +166,23 @@ func _show_dock_infos():
 			label_part_desc.add_theme_font_size_override("font_size", 13)
 			label_part_desc.add_theme_color_override("font_color", Color(0.85, 0.85, 0.85))
 			vbox.add_child(label_part_desc)
-		
+
+func _show_dock_infos():
+	# Clear old content
+	for child in dock_instance.get_children():
+		dock_instance.remove_child(child)
+		child.queue_free()
+	
+	if not tutorial: _dock_home()
+	else: _dock_tutorial()
+	
 func _on_back_button_pressed():
 	# Example: return to the start screen
+	tutorial = null
+	for popup in popups:
+		if is_instance_valid(popup):
+			popup.queue_free()
+	popups.clear()
 	_show_dock_infos()
 	
 func _on_start_button_pressed():
@@ -147,6 +198,8 @@ func _exit_tree():
 		if is_instance_valid(popup):
 			popup.queue_free()
 	popups.clear()
-
-	remove_control_from_docks(tutorial_dock)
-	tutorial_dock.queue_free()
+	
+	if tutorial_dock:
+		remove_control_from_docks(tutorial_dock)
+		tutorial_dock.queue_free()
+		tutorial_dock = null

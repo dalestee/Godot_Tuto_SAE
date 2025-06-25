@@ -2,10 +2,12 @@
 class_name TutorialPart
 extends RefCounted
 
+const TutorialStep := preload("res://addons/tutorial/src/tutorial/TutorialStep.gd")
+
 var title: String
 var description: String
 var steps: Array = []
-var current_step_idx: int = 0
+var current_step_idx: int = -1
 
 func _init(title_text: String = "", desc_text: String = ""):
 	title = title_text
@@ -24,8 +26,8 @@ func steps_count() -> int:
 	return steps.size()
 
 func next_step() -> TutorialStep:
+	current_step_idx += 1
 	var step = get_step(current_step_idx)
 	if not step: 
 		return null
-	current_step_idx += 1
 	return step

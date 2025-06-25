@@ -1,11 +1,12 @@
 @tool
 extends EditorPlugin
 
-
+const Tutorial = preload("res://addons/tutorial/src/tutorial/Tutorial.gd")
+const TutorialLoader = preload("res://addons/tutorial/src/tutorial/TutorialLoader.gd")
 var dock_instance: Control
 var tutorial_dock: Control
 var tutorial: Tutorial
-var loader = preload("res://addons/tutorial/src/tutorial/TutorialLoader.gd").new()
+var loader: TutorialLoader = TutorialLoader.new()
 var base_ui: Control
 var popups: Array = []
 var timer: Timer
@@ -27,14 +28,21 @@ func _on_timer_timeout():
 	for popup in popups:
 		if is_instance_valid(popup):
 			popup.update_position()
-	
+	if is_instance_valid(dock_instance):
+		var dock_width = dock_instance.get_rect().size[0]
+		if dock_instance.get_child_count() > 0:
+			var content = dock_instance.get_child(0)
+			if content:
+				content.custom_minimum_size.x = dock_width
+				
 func _show_next_popup():
 	var step = tutorial.next_step()
 	var part = tutorial.get_current_part()
 	if not step or not part: return
 	var node = base_ui.find_child(step.target_node, true, false)
-	var popup = PopUp.new(step.description, node, _show_next_popup, part.current_step_idx, part.steps_count())
+	var popup = PopUp.new(step.description, node, _show_next_popup, part.current_step_idx+1, part.steps_count())
 	popups.append(popup)
+
 	base_ui.add_child(popup)
 	_show_dock_infos()
 	
@@ -166,6 +174,16 @@ func _dock_tutorial():
 			label_part_desc.add_theme_font_size_override("font_size", 13)
 			label_part_desc.add_theme_color_override("font_color", Color(0.85, 0.85, 0.85))
 			vbox.add_child(label_part_desc)
+			
+			# Code
+			var step = tutorial.get_current_step()
+			if step.code != "":
+				var code_edit = CodeEdit.new()
+				code_edit.set_custom_minimum_size(Vector2(0, 120))
+				code_edit.size_flags_vertical = Control.SIZE_FILL  # or SIZE_EXPAND_FILL if you want it to fill vertical space
+				code_edit.text = step.code
+				vbox.add_child(code_edit)
+
 
 func _show_dock_infos():
 	# Clear old content
@@ -175,6 +193,12 @@ func _show_dock_infos():
 	
 	if not tutorial: _dock_home()
 	else: _dock_tutorial()
+	if is_instance_valid(dock_instance):
+		var dock_width = dock_instance.get_rect().size[0]
+		if dock_instance.get_child_count() > 0:
+			var content = dock_instance.get_child(0)
+			if content:
+				content.custom_minimum_size.x = dock_width
 	
 func _on_back_button_pressed():
 	# Example: return to the start screen

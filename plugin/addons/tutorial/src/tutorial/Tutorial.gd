@@ -9,6 +9,7 @@ var description: String = ""
 var parts: Array[TutorialPart] = []
 var current_part_idx: int = 0
 var started: bool = false
+var codes: Array[String] = []
 
 func _init(tutorial_title: String = "", tutorial_description: String = ""):
 	title = tutorial_title

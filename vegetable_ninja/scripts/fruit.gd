@@ -29,14 +29,24 @@ func slice():
 func create_sliced_piece(direction: int):
 	var piece = SlicedFruit.instantiate()
 	get_parent().add_child(piece)
-	var piece_texture_path = "res://assets/%s_half_%d.png" % [fruit_name, 1 if direction == -1 else 2]
+
+	# --- THIS IS THE CORRECTED LINE ---
+	# It uses '%s' for the fruit_name and '%d' for the number.
+	# It also uses the hyphen '-' to match your filenames.
+	var piece_texture_path = "res://assets/%s-half_%d.png" % [fruit_name, 1 if direction == -1 else 2]
+	# ------------------------------------
+	
+	# This print statement is great for debugging! You can leave it or remove it.
+	print("Loading sliced piece: ", piece_texture_path) 
+
 	piece.get_node("Sprite2D").texture = load(piece_texture_path)
+	
 	piece.global_position = global_position
 	piece.rotation = rotation
 	var impulse_strength = 200
 	var impulse_vector = Vector2(impulse_strength * direction, -impulse_strength / 2).rotated(rotation)
 	piece.apply_central_impulse(impulse_vector)
-
+	
 # This function is called when the fruit leaves the screen
 func _on_screen_exited():
 	emit_signal("fruit_missed")

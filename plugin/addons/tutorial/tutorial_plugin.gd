@@ -174,10 +174,23 @@ func _dock_tutorial():
 			var step = tutorial.get_current_step()
 			if step.code != "":
 				var code_edit = CodeEdit.new()
-				code_edit.set_custom_minimum_size(Vector2(0, 120))
-				code_edit.size_flags_vertical = Control.SIZE_FILL  # or SIZE_EXPAND_FILL if you want it to fill vertical space
 				code_edit.text = step.code
+				code_edit.wrap_mode = TextEdit.LINE_WRAPPING_NONE
+				code_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				code_edit.size_flags_vertical = Control.SIZE_FILL
+
+				# Calculate height based on number of lines
+				var line_height = code_edit.get_line_height()  # default is 14px or so depending on font
+				var line_count = code_edit.get_line_count()
+				var padding = 12  # optional vertical padding
+
+				var highlighter := GDScriptSyntaxHighlighter.new()
+				code_edit.syntax_highlighter = highlighter
+				# Set height to fit content
+				code_edit.custom_minimum_size.y = (line_height * line_count) + padding
+
 				vbox.add_child(code_edit)
+
 
 
 func _show_dock_infos():

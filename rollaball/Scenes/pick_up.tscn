@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://dwc58yvvyexd6"]
+
+[ext_resource type="Script" uid="uid://bfvtk0kfn837n" path="res://Scripts/Rotator.gd" id="1_vjksl"]
+[ext_resource type="Material" uid="uid://c0ml561lj6y2p" path="res://Materials/pickUp.tres" id="2_bss85"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rq21l"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vcft8"]
+
+[node name="PickUp" type="Area3D" groups=["pickups"]]
+transform = Transform3D(0.426777, -0.0732233, 0.25, 0.25, 0.25, -0.353553, -0.0732233, 0.426777, 0.25, 0, 0, 0)
+script = ExtResource("1_vjksl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+material_override = ExtResource("2_bss85")
+mesh = SubResource("BoxMesh_rq21l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(2, 4.47035e-08, 8.9407e-08, -4.47035e-08, 2, 1.19209e-07, -8.9407e-08, -1.19209e-07, 2, 0, 0, 0)
+shape = SubResource("BoxShape3D_vcft8")
+debug_color = Color(0.840665, 0.345077, 0.441956, 0.42)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

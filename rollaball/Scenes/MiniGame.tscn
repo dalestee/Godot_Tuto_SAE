@@ -1,8 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://c1fd0n1p774lr"]
+[gd_scene load_steps=11 format=3 uid="uid://c1fd0n1p774lr"]
 
-[ext_resource type="Script" uid="uid://xc88ivrdgvf5" path="res://Scenes/PlayerController.gd" id="1_vcft8"]
+[ext_resource type="PackedScene" uid="uid://dwc58yvvyexd6" path="res://Scenes/pick_up.tscn" id="1_5rybl"]
+[ext_resource type="Script" uid="uid://bsh80miyqrxa6" path="res://Scripts/LevelManager.gd" id="1_t1rg2"]
+[ext_resource type="Script" uid="uid://xc88ivrdgvf5" path="res://Scripts/PlayerController.gd" id="1_vcft8"]
 [ext_resource type="Material" uid="uid://b8oo5p7bdyr8y" path="res://Materials/Player.tres" id="2_vcft8"]
-[ext_resource type="Script" uid="uid://dtxqu1blkfo0t" path="res://Scenes/CameraController.gd" id="3_sbppy"]
+[ext_resource type="Script" uid="uid://dtxqu1blkfo0t" path="res://Scripts/CameraController.gd" id="3_sbppy"]
+[ext_resource type="Script" uid="uid://cecrxmq7rg5k3" path="res://Scripts/ScoreLabel.gd" id="6_jdjdp"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_rq21l"]
 
@@ -13,9 +16,17 @@
 [sub_resource type="SphereMesh" id="SphereMesh_rq21l"]
 
 [node name="Node3D" type="Node3D"]
+script = ExtResource("1_t1rg2")
+pick_up_scene = ExtResource("1_5rybl")
+number_of_pickups = 5
+spawn_radius = 5.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
 
 [node name="Ground" type="StaticBody3D" parent="."]
-transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+transform = Transform3D(7, 0, 0, 0, 1, 0, 0, 0, 7, 0, 0, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
@@ -24,8 +35,57 @@ mesh = SubResource("BoxMesh_rq21l")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
 shape = SubResource("BoxShape3D_vcft8")
+debug_color = Color(0.840665, 0.345077, 0.441956, 0.42)
 
-[node name="Player" type="RigidBody3D" parent="."]
+[node name="WestWall" type="StaticBody3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 2, 0, 0, 0, 7, -6.9, 1, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WestWall"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+mesh = SubResource("BoxMesh_rq21l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WestWall"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+shape = SubResource("BoxShape3D_vcft8")
+debug_color = Color(0.840665, 0.345077, 0.441956, 0.42)
+
+[node name="EastWall" type="StaticBody3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 2, 0, 0, 0, 7, 6.9, 1, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EastWall"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+mesh = SubResource("BoxMesh_rq21l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EastWall"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+shape = SubResource("BoxShape3D_vcft8")
+debug_color = Color(0.840665, 0.345077, 0.441956, 0.42)
+
+[node name="NorthWall" type="StaticBody3D" parent="."]
+transform = Transform3D(-4.37114e-09, 0, 7, 0, 2, 0, -0.1, 0, -3.0598e-07, 0, 1, -6.9)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NorthWall"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+mesh = SubResource("BoxMesh_rq21l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NorthWall"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+shape = SubResource("BoxShape3D_vcft8")
+debug_color = Color(0.840665, 0.345077, 0.441956, 0.42)
+
+[node name="SouthWall" type="StaticBody3D" parent="."]
+transform = Transform3D(-4.37114e-09, 0, 7, 0, 2, 0, -0.1, 0, -3.0598e-07, 0, 1, 6.9)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SouthWall"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+mesh = SubResource("BoxMesh_rq21l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SouthWall"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+shape = SubResource("BoxShape3D_vcft8")
+debug_color = Color(0.840665, 0.345077, 0.441956, 0.42)
+
+[node name="Player" type="RigidBody3D" parent="." groups=["player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05421, 0)
 script = ExtResource("1_vcft8")
 
@@ -37,9 +97,16 @@ material_override = ExtResource("2_vcft8")
 mesh = SubResource("SphereMesh_rq21l")
 
 [node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("target")]
-transform = Transform3D(1, 0, 0, 0, 0.926968, 0.375141, 0, -0.375141, 0.926968, -0.0737107, 1.86559, 3.77453)
+transform = Transform3D(1, 0, 0, 0, 0.829018, 0.559222, 0, -0.559222, 0.829018, -0.0737107, 6.43574, 9.00838)
 script = ExtResource("3_sbppy")
 target = NodePath("../Player")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.85179, 1.90223, 0)
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.92549, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "Score: 0"
+script = ExtResource("6_jdjdp")

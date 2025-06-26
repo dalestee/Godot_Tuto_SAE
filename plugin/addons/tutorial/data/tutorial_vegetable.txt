@@ -1,46 +1,38 @@
-Of course. Here is a complete tutorial for creating the game, following the exact format you provided.
-
-***
-
 Tutorial Vegetable Ninja
 In this tutorial, you will learn how to create a Vegetable Ninja game, where players slice vegetables using their mouse and lose if they miss too many.
 
 Project Setup, description
 "Create a new Godot project", Scene
-"Create a folder named 'scenes' in the FileSystem", Scene
-"Create a folder named 'scripts' in the FileSystem", Scene
-"Create a folder named 'assets' and place your vegetable images there (e.g., carrot.png, carrot-half_1.png)", Scene
+"Create a folder named 'scenes'", FileSystem
+"Create a folder named 'scripts'", FileSystem
+"Create a folder named 'assets' and place your vegetable images there (e.g., carrot.png, carrot-half_1.png)", FileSystem
 
 Create the Vegetable Scene, description
-"Create a New Scene", Scene
-"Add a RigidBody2D as the root node", Scene
+"Create a New 2D Scene", Scene
+"Swape the root node to a RigidBody2D node (right click node -> change type)", Scene
 "Rename it 'Vegetable'", Scene
 "Add a Sprite2D as a child of 'Vegetable'", Scene
-"Add a CollisionShape2D as a child of 'Vegetable' and give it a shape (e.g., CapsuleShape2D)", Scene
+"Add a CollisionShape2D as a child of 'Vegetable'", Scene
+"Give it a circular shape", Inspector
 "Add an Area2D as a child of 'Vegetable'", Scene
-"Add a CollisionShape2D as a child of the 'Area2D' and give it the same shape", Scene
+"Add a CollisionShape2D as a child of the 'Area2D'", Scene
+"Give it a circular shape too", Inspector
+"Go to the Node tab -> Groups, and add it to a group named 'vegetables'", Inspector
 "Add a VisibleOnScreenNotifier2D as a child of 'Vegetable'", Scene
-"Select the 'Area2D' node, go to the Node tab -> Groups, and add it to a group named 'vegetables'", Scene
 "Save the scene as 'vegetable.tscn' in the 'scenes' folder", Scene
 
 Create the Sliced Vegetable Scene, description
-"Create a New Scene", Scene
-"Add a RigidBody2D as the root node", Scene
-"Rename it 'SlicedVegetable'", Scene
+"Create a New 2D Scene named sliced_vegetable", FileSystem
+"Swape the root node to a RigidBody2D node (right click node -> change type)", Scene
 "Add a Sprite2D as a child of 'SlicedVegetable'", Scene
 "Add a CollisionShape2D as a child of 'SlicedVegetable'", Scene
-"Save the scene as 'sliced_vegetable.tscn' in the 'scenes' folder", Scene
+"Give it a circular shape", Inspector
 
 Implement Vegetable Logic, description
-"Attach a new script to the 'Vegetable' root node", Code
-"Save the script as 'vegetable.gd' in the 'scripts' folder", Code
-"Define signals for when the vegetable is sliced or missed", Code
-"Export variables for the vegetable's name and point value", Code
-"Preload the 'SlicedVegetable' scene", Code
-"In the _ready function, set the texture and connect the notifier's screen_exited signal", Code
-"Create the slice() function to handle being cut", Code
-"Create the create_sliced_piece() function to spawn the two halves", Code
-"Create the _on_screen_exited() function to handle when the vegetable is missed", Code
+"Open the vegetable scene", FileSystem
+"Attach a new script to the 'Vegetable' root node and name it 'vegetable.gd'", Scene
+"Save the script in the 'scripts' folder", FileSystem
+"Copy the code in the dock and paste it in 'vegetable.gd'", Scene
 ```gdscript
 # scripts/vegetable.gd
 extends RigidBody2D
@@ -59,53 +51,46 @@ var SlicedVegetable = preload("res://scenes/sliced_vegetable.tscn")
 @onready var notifier = $VisibleOnScreenNotifier2D
 
 func _ready():
-    # Set the texture based on the vegetable_name
-    $Sprite2D.texture = load("res://assets/%s.png" % vegetable_name)
-    # Connect the notifier's signal to a function in this script
-    notifier.screen_exited.connect(_on_screen_exited)
+	# Set the texture based on the vegetable_name
+	$Sprite2D.texture = load("res://assets/%s.png" % vegetable_name)
+	# Connect the notifier's signal to a function in this script
+	notifier.screen_exited.connect(_on_screen_exited)
 
 func slice():
-    # Prevent a vegetable from being both "missed" and "sliced"
-    notifier.screen_exited.disconnect(_on_screen_exited)
-    emit_signal("sliced", points)
-    create_sliced_piece(-1) # Left half
-    create_sliced_piece(1)  # Right half
-    queue_free()
+	# Prevent a vegetable from being both "missed" and "sliced"
+	notifier.screen_exited.disconnect(_on_screen_exited)
+	emit_signal("sliced", points)
+	create_sliced_piece(-1) # Left half
+	create_sliced_piece(1)  # Right half
+	queue_free()
 
 func create_sliced_piece(direction: int):
-    var piece = SlicedVegetable.instantiate()
-    get_parent().add_child(piece)
-    # Assumes your sliced asset files are named like 'carrot-half_1.png'
-    var piece_texture_path = "res://assets/%s-half_%d.png" % [vegetable_name, 1 if direction == -1 else 2]
-    piece.get_node("Sprite2D").texture = load(piece_texture_path)
-    piece.global_position = global_position
-    piece.rotation = rotation
-    var impulse_strength = 200
-    var impulse_vector = Vector2(impulse_strength * direction, -impulse_strength / 2).rotated(rotation)
-    piece.apply_central_impulse(impulse_vector)
+	var piece = SlicedVegetable.instantiate()
+	get_parent().add_child(piece)
+	# Assumes your sliced asset files are named like 'carrot-half_1.png'
+	var piece_texture_path = "res://assets/%s-half_%d.png" % [vegetable_name, 1 if direction == -1 else 2]
+	piece.get_node("Sprite2D").texture = load(piece_texture_path)
+	piece.global_position = global_position
+	piece.rotation = rotation
+	var impulse_strength = 200
+	var impulse_vector = Vector2(impulse_strength * direction, -impulse_strength / 2).rotated(rotation)
+	piece.apply_central_impulse(impulse_vector)
 
 # This function is called when the vegetable leaves the screen
 func _on_screen_exited():
-    emit_signal("missed")
-    queue_free() # Clean up the missed vegetable
+	emit_signal("missed")
+	queue_free() # Clean up the missed vegetable
 ```
 
 Create the Main Game Scene, description
-"Create a New Scene", Scene
-"Add a Node2D as the root node and rename it 'Main'", Scene
-"Add a Timer child node, name it 'SpawnTimer', and set its 'Autostart' property to on", Scene
-"Add a Line2D child node for the swipe trail", Scene
+"Create a New Scene named 'main.tscn'", FileSystem
+"Add a Timer child node, name it 'SpawnTimer'", Scene
+"Set its 'Autostart' property to on", Inspector
+"Add a Line2D node as a child of the Main node (for the swipe trail)", Scene
 "Go to Project -> Project Settings -> Application -> Run and set 'Main Scene' to 'main.tscn'", Scene
-"Attach a new script to the 'Main' node", Code
-"Save the script as 'main.gd'", Code
-"Define variables for score, misses, and swipe tracking", Code
-"In the _ready function, connect the timer and initialize the UI", Code
-"Use the _process function to update the swipe trail's visual", Code
-"Use the _input function to track mouse presses and movement for swiping", Code
-"Create the detect_slice() function using a PhysicsRayQuery to find sliced vegetables", Code
-"Create the _on_spawn_timer_timeout() function to instance and launch new vegetables", Code
-"Create functions to handle signals from the vegetable for scoring and misses", Code
-"Create the game_over() function to show the game over screen", Code
+"Attach a new script called 'main.gd' to the 'Main' node", Scene
+"Put it in the scripts folder", FileSystem
+"Copy the code in the dock and paste it in 'main.gd'", Scene
 ```gdscript
 # scripts/main.gd
 extends Node2D
@@ -122,100 +107,100 @@ var swipe_points = []
 
 @onready var spawn_timer = $SpawnTimer
 @onready var swipe_trail = $Line2D
-@onready var score_label = $UI/ScoreLabel # From the UI scene we'll add
-@onready var misses_label = $UI/MissesLabel # From the UI scene we'll add
+@onready var score_label = $Ui/ScoreLabel # From the Ui scene we'll add
+@onready var misses_label = $Ui/MissesLabel # From the Ui scene we'll add
 
 func _ready():
-    spawn_timer.timeout.connect(_on_spawn_timer_timeout)
-    update_score(0)
-    update_misses()
+	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
+	update_score(0)
+	update_misses()
 
 func _process(delta):
-    if is_swiping:
-        swipe_trail.add_point(get_global_mouse_position())
-    elif swipe_trail.get_point_count() > 0:
-        swipe_trail.clear_points()
+	if is_swiping:
+		swipe_trail.add_point(get_global_mouse_position())
+	elif swipe_trail.get_point_count() > 0:
+		swipe_trail.clear_points()
 
 func _input(event):
-    if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-        is_swiping = event.pressed
-        if not is_swiping:
-            swipe_points.clear()
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		is_swiping = event.pressed
+		if not is_swiping:
+			swipe_points.clear()
 
-    if event is InputEventMouseMotion and is_swiping:
-        swipe_points.append(event.position)
-        if swipe_points.size() > 20:
-            swipe_points.pop_front()
-        detect_slice()
+	if event is InputEventMouseMotion and is_swiping:
+		swipe_points.append(event.position)
+		if swipe_points.size() > 20:
+			swipe_points.pop_front()
+		detect_slice()
 
 func detect_slice():
-    if swipe_points.size() < 2:
-        return
-    var space_state = get_world_2d().direct_space_state
-    var query = PhysicsRayQueryParameters2D.create(swipe_points[0], swipe_points[-1])
-    query.collide_with_areas = true
-    query.collide_with_bodies = false
-    var result = space_state.intersect_ray(query)
-    if result and result.collider.is_in_group("vegetables"):
-        result.collider.get_parent().slice()
+	if swipe_points.size() < 2:
+		return
+	var space_state = get_world_2d().direct_space_state
+	var query = PhysicsRayQueryParameters2D.create(swipe_points[0], swipe_points[-1])
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+	var result = space_state.intersect_ray(query)
+	if result and result.collider.is_in_group("vegetables"):
+		result.collider.get_parent().slice()
 
 func _on_spawn_timer_timeout():
-    var screen_size = get_viewport_rect().size
-    var spawn_pos = Vector2(randf_range(0, screen_size.x), screen_size.y + 100)
-    var vegetable = VegetableScene.instantiate()
-    vegetable.sliced.connect(_on_vegetable_sliced)
-    vegetable.missed.connect(_on_vegetable_missed)
-    vegetable.position = spawn_pos
-    add_child(vegetable)
-    var impulse_x = randf_range(-150, 150)
-    var impulse_y = randf_range(-800, -1000)
-    vegetable.apply_central_impulse(Vector2(impulse_x, impulse_y))
-    vegetable.apply_torque_impulse(randf_range(-200, 200))
+	var screen_size = get_viewport_rect().size
+	var spawn_pos = Vector2(randf_range(0, screen_size.x), screen_size.y + 100)
+	var vegetable = VegetableScene.instantiate()
+	vegetable.sliced.connect(_on_vegetable_sliced)
+	vegetable.missed.connect(_on_vegetable_missed)
+	vegetable.position = spawn_pos
+	add_child(vegetable)
+	var impulse_x = randf_range(-150, 150)
+	var impulse_y = randf_range(-800, -1000)
+	vegetable.apply_central_impulse(Vector2(impulse_x, impulse_y))
+	vegetable.apply_torque_impulse(randf_range(-200, 200))
 
 func _on_vegetable_sliced(points):
-    update_score(points)
+	update_score(points)
 
 func _on_vegetable_missed():
-    missed_vegetables += 1
-    update_misses()
-    if missed_vegetables >= MAX_MISSES:
-        game_over()
+	missed_vegetables += 1
+	update_misses()
+	if missed_vegetables >= MAX_MISSES:
+		game_over()
 
 func update_score(points_to_add):
-    score += points_to_add
-    score_label.text = "Score: " + str(score)
+	score += points_to_add
+	score_label.text = "Score: " + str(score)
 
 func update_misses():
-    misses_label.text = "Misses: %d / %d" % [missed_vegetables, MAX_MISSES]
+	misses_label.text = "Misses: %d / %d" % [missed_vegetables, MAX_MISSES]
 
 func game_over():
-    get_tree().paused = true
-    var game_over_instance = GameOverScreen.instantiate()
-    add_child(game_over_instance)
-    game_over_instance.show_final_score(score)
+	get_tree().paused = true
+	var game_over_instance = GameOverScreen.instantiate()
+	add_child(game_over_instance)
+	game_over_instance.show_final_score(score)
 ```
 
 Create the User Interface (UI), description
-"Create a New Scene", Scene
-"Add a CanvasLayer as the root node and rename it 'UI'", Scene
+"Create a New Scene called 'ui.tscn'", FileSystem
+"Swape the root node to a CanvasLayer node (right click node -> change type)", Scene
 "Add a Label child node and name it 'ScoreLabel'", Scene
 "Add another Label child node and name it 'MissesLabel'", Scene
+"Open the 2D view", 2D
 "Position the labels on the screen, for example in the top corners", Scene
-"Save the scene as 'ui.tscn' in the 'scenes' folder", Scene
-"In 'main.tscn', instance the 'ui.tscn' scene as a child of the 'Main' node", Scene
+"Open the 'main.tscn' scene", FileSystem
+"Instanciate the 'ui.tscn' scene as a child of the 'Main' node (drag and drop the ui.tscn in the Main node)", Scene
 
 Create the Game Over Screen, description
-"Create a New Scene", Scene
-"Add a CanvasLayer as the root node and rename it 'GameOverScreen'", Scene
-"Select 'GameOverScreen', go to the Inspector -> Process -> Mode, and set it to 'Always'", Scene
-"Add a ColorRect child for a semi-transparent background and set it to 'Full Rect' in the Layout menu", Scene
+"Create a New Scene called 'game_over_screen", FileSystem
+"Swape the root node to a CanvasLayer node (right click node -> change type)", Scene
+"Go to the Inspector -> Process -> Mode, and set it to 'Always'", Inspector
+"Add a ColorRect child", Scene
+"Set it to 'Full Rect' in the Inspector -> Layout menu", Inspector
 "Add a Label child for the 'Game Over' text", Scene
-"Add a Label child named 'FinalScoreLabel' for the final score display", Scene
-"Add a Button child named 'RestartButton' for the 'Restart' button", Scene
-"Save the scene as 'game_over_screen.tscn'", Scene
-"Attach a new script to the 'GameOverScreen' node", Code
-"Create a function to display the final score", Code
-"Connect the button's 'pressed' signal to a function that unpauses and reloads the main scene", Code
+"Add a Label child named 'FinalScoreLabel'", Scene
+"Add a Button child named 'RestartButton'", Scene
+"Attach a new script to the 'GameOverScreen' node and name it 'game_over_screen.gd'", Scene
+"Copy the code in the dock and paste it in 'game_over_screen.gd'", Scene
 ```gdscript
 # scripts/game_over_screen.gd
 extends CanvasLayer
@@ -224,14 +209,14 @@ extends CanvasLayer
 @onready var restart_button = $RestartButton
 
 func _ready():
-    restart_button.pressed.connect(_on_restart_button_pressed)
+	restart_button.pressed.connect(_on_restart_button_pressed)
 
 func show_final_score(score: int):
-    final_score_label.text = "Final Score: " + str(score)
+	final_score_label.text = "Final Score: " + str(score)
 
 func _on_restart_button_pressed():
-    # Unpause the game so the new scene can run correctly
-    get_tree().paused = false
-    # Reload the entire main game scene to start over
-    get_tree().change_scene_to_file("res://scenes/main.tscn")
+	# Unpause the game so the new scene can run correctly
+	get_tree().paused = false
+	# Reload the entire main game scene to start over
+	get_tree().change_scene_to_file("res://scenes/main.tscn")
 ```

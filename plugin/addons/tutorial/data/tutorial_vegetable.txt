@@ -5,7 +5,7 @@ Project Setup, description
 "Create a new Godot project", Scene
 "Create a folder named 'scenes'", FileSystem
 "Create a folder named 'scripts'", FileSystem
-"Create a folder named 'assets' and place your vegetable images there (e.g., carrot.png, carrot-half_1.png)", FileSystem
+"Create a folder named 'assets' and place your vegetable images (carrot.png, carrot-half_1.png and carrot-half_2.png)", FileSystem
 
 Create the Vegetable Scene, description
 "Create a New 2D Scene", Scene

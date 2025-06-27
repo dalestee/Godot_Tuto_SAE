@@ -1,34 +1,183 @@
 Tutorial Roll A Ball
 In this tutorial, you will learn how to create a basic game with a ball rolling on the ground that you will be able to control with your keyboard
 
-Project bases, In this part you will have to create the scene the ground and the player
+Project bases, In this part you will have to create the scene, the ground and the player
+"Create two folders scripts and scenes", FileSystem
 "Create a 3D scene", Scene
 "Add a StaticBody3D node", Scene
 "Rename it 'Ground'", Scene
-"Add a MeshInstance3D node in the 'Ground' node", Scene
-"Change its size to (2, 1, 2)", Inspector
-"Add a CollisionShape3D node in the 'Ground' Node", Scene
-"Set the Shape attribute to BoxShape", Inspector
-"Add a KinematicBody3D node", Scene
+"Change position of ground to (0, -0.5, 0)"
+"Add a MeshInstance3D node as a child of the 'Ground' node", Scene
+"Add a CollisionShape3D node as a child of the 'Ground' node", Scene
+"Set the Shape property to BoxShape to both", Inspector
+"Set scale of both to (20, 1, 20)", Inspector
+"Add a RigidBody3D node", Scene
 "Rename it 'Player'", Scene
-"Add a MeshInstance3D node in the 'Player' Node", Scene
-"Set the Mesh attribute to SphereMesh", Inspector
-"Add a CollisionShape3D in the 'Player' Node", Scene
-"Set the Shape attribute to SphereShape", Inspector
-
-Camera, In this part you will have to create a Camera that follows the Player
-"Add a Camera node in the 'Player' Node", Scene
-"? Set the Position of the Camera to (-10, 0, 0)", Inspector
-"? Set the Rotation of the Camera to (-15, 0, 0)", Inspector
+"Add a MeshInstance3D node as a child of the 'Player' node", Scene
+"Add a CollisionShape3D node as a child of the 'Player' node", Scene
+"Set the Shape property to SphereShape", Inspector
+"Set position of player to (0, 1, 0)", Inspector
+"Put player node on the group 'player' Node->Groups"
 
 Player movements, In this part you will add controls to the Player
-"Click On Project", Project
-"Click On Project settings", Settings
-"On Control section, add the move action", Settings
-"Assign the touch to the actions", Settings
-"Click on the Player node and then click on Attach Node Script", Scene
-"? Create the Node Script", Create
+"Select the Player node and then click on Attach Script", Scene
+"? Create a new GDScript named PlayerController.gd (copy paste the code in the dock)", FileSystem
+```
+extends RigidBody3D
 
+var speed := 10.0
+var input_vector := Vector2.ZERO
 
-Create the materials, In this part you will create material
-"jsp", Scene
+func _physics_process(delta):
+	input_vector = Vector2.ZERO
+	if Input.is_action_pressed("ui_right"):
+		input_vector.x += 1
+	if Input.is_action_pressed("ui_left"):
+		input_vector.x -= 1
+	if Input.is_action_pressed("ui_up"):
+		input_vector.y -= 1
+	if Input.is_action_pressed("ui_down"):
+		input_vector.y += 1
+	if input_vector.length() > 0:
+		input_vector = input_vector.normalized()
+		var force = Vector3(input_vector.x, 0, input_vector.y) * speed
+		apply_central_force(force)
+```
+
+Light, in this part you will put some light!
+"Add to your root node a 'DirectionalLight3d'", Scene
+
+Camera, In this part you will have to create a Camera that follows the Player
+"Add a Camera3D node as a child of the root node", Scene
+"? Set the Position of the Camera to (0, 5, 10)", Inspector
+"? Set the Rotation of the Camera to (-30, 0, 0)", Inspector
+"Attach a new script CameraController.gd to Scripts node", Scene
+```
+extends Node3D
+
+@export var player: Node3D
+@export var camera: Camera3D
+
+var offset: Vector3
+
+func _ready():
+	offset = camera.global_transform.origin - player.global_transform.origin
+
+func _process(delta):
+	camera.global_transform.origin = player.global_transform.origin + offset
+```
+"Assign the Player node and the Camera3D node to the exported variables in the inspector", Inspector
+
+Create the materials, In this part you will create materials and assign them to Ground and Player
+"Create a new StandardMaterial3D resource for the Ground", Inspector
+"Set Albedo Color to (0.51, 0.51, 0.51) [RGB 130,130,130]", Inspector
+"Assign the material to the MeshInstance3D of the Ground", Scene
+"Create a new StandardMaterial3D resource for the Player", Inspector
+"Set Albedo Color to (0, 0.86, 1) [RGB 0,220,255]", Inspector
+"Set Metallic to 0.75 and Roughness to 0.75 (Smoothness 0.25)", Inspector
+"Assign the material to the MeshInstance3D of the Player", Scene
+
+Create walls, In this part you will create walls to contain the playfield
+"Add a StaticBody3D node named WestWall", Scene
+"Add a MeshInstance3D as child of WestWall with BoxMesh", Scene
+"Add a CollisionShape3D as child of WestWall with BoxMesh", Scene
+"Set WestWall position to (-10, 1, 0)", Inspector
+"Set WestWall scale of WestWall to (0.5, 2, 20.5)", Inspector
+"Create a new StandardMaterial3D for Walls with Albedo color (0.31, 0.31, 0.31) [RGB 79,79,79]", Inspector
+"Assign this material to WestWall's MeshInstance3D", Scene
+"Duplicate WestWall for EastWall at position (10, 1, 0)", Scene
+"Duplicate WestWall for NorthWall at (0, 1, -10) and rotate 90 degrees on Y axis", Scene
+"Duplicate WestWall for SouthWall at (0, 1, 10) and rotate 90 degrees on Y axis", Scene
+
+Create Collectibles, description
+"Create a Scene with a Area3D as root node and name it 'pickups'", Scene
+"Add it to a new group named 'pickups' in the Node tab -> Groups", Inspector
+"Add a MeshInstance3D as a child of 'Pickup' as BoxShape3D", Scene
+"Add a CollisionShape3D as a child of 'Pickup' as BoxShape3D", Scene
+"Select the 'Pickup' root node. In the Inspector, set its 'Rotation Degrees' to (45, 45, 45) and 'Scale' to (0.5, 0.5, 0.5)", Inspector
+"Create a 'New StandardMaterial3D' for the 'MeshInstance3D' with an Albedo color of (255, 200, 0)", Inspector
+"Select the 'Pickup' (Area3D) node. In the Inspector, under the 'Area3D' category, confirm that the Monitoring property is checked ON.", Inspector
+"Attach a new script named 'pickup.gd' to the 'Pickup' root node", Scene
+"Copy the code in the dock and paste it in 'pickup.gd'", Scene
+"Activate the Signal body_entered on the Pickup object Node->Signals", Inspector
+```
+# scripts/pickup.gd (New Logic)
+extends Area3D
+
+# This signal will tell the main scene that a point should be scored.
+signal collected
+
+func _process(delta):
+	rotate_y(deg_to_rad(75) * delta)
+
+func _on_body_entered(body):
+	# Check if the body that entered is in the "player" group.
+	if body.is_in_group("player"):
+		emit_signal("collected") 
+		queue_free() # Destroy the pickup.
+
+```
+"Save the scene as 'pickup.tscn'", Scene
+"In 'main.tscn', add a 'Node3D' named 'PickupSpawner' and attach the 'pickup_spawner.gd' script to it", Scene
+```
+# scripts/pickup_spawner.gd (Updated)
+extends Node3D
+
+@export var prefab_pickup: PackedScene
+# A reference to the main script to connect the signal to.
+@export var main_game: Node 
+
+func _ready():
+	var radius = 8.0
+	var count = 12
+	
+	for i in range(count):
+		var angle = 2 * PI * i / count
+		var x = radius * cos(angle)
+		var z = radius * sin(angle)
+		
+		var pickup_instance = prefab_pickup.instantiate()
+		
+		# THIS IS THE KEY: Connect the new pickup's "collected" signal
+		# to the main_game's "_on_pickup_collected" function.
+		if main_game:
+			pickup_instance.collected.connect(main_game._on_pickup_collected)
+		
+		add_child(pickup_instance)
+		pickup_instance.position = Vector3(x, 1.0, z)
+```
+"Drag 'pickup.tscn' into the 'Prefab Pickup' slot on the 'PickupSpawner' node", Inspector
+"Drag main root node into 'Main Game' slot", Inspector
+
+Create the UI, description
+"Create a 'User Interface' scene ('ui.tscn') with a 'CanvasLayer' root", Scene
+"Add a 'Label' named 'ScoreLabel' and another named 'WinLabel'", Scene
+"Anchor 'ScoreLabel' to 'Top Center' and 'WinLabel' to 'Center'", Inspector
+"Save the scene. Instance it in 'main.tscn'", Scene
+"Attach the 'main.gd' script to the 'Main' node in 'main.tscn'", Scene
+"Copy the code in the dock and paste it in 'main.gd'", Scene
+```
+# scripts/main.gd (Updated)
+extends Node3D
+
+var score = 0
+var total_pickups = 12
+
+@onready var score_label = $Ui/ScoreLabel
+@onready var win_label = $Ui/WinLabel
+
+func _ready():
+	update_score_ui()
+	win_label.hide()
+
+# This is the function that the pickup's signal will call.
+func _on_pickup_collected():
+	score += 1
+	update_score_ui()
+	if score >= total_pickups:
+		win_label.show()
+
+func update_score_ui():
+	score_label.text = "Score: %s" % score
+```
+

@@ -1,13 +1,12 @@
 Tutorial Vegetable Ninja
 In this tutorial, you will learn how to create a Vegetable Ninja game, where players slice vegetables using their mouse and lose if they miss too many.
 
-Project Setup, description
-"Create a new Godot project", Scene
+Project Setup, Setup the project folders
 "Create a folder named 'scenes'", FileSystem
 "Create a folder named 'scripts'", FileSystem
 "Create a folder named 'assets' and place your vegetable images (carrot.png, carrot-half_1.png and carrot-half_2.png)", FileSystem
 
-Create the Vegetable Scene, description
+Create the Vegetable Scene, Build a reusable vegetable scene with collision and visuals
 "Create a New 2D Scene", Scene
 "Swape the root node to a RigidBody2D node (right click node -> change type)", Scene
 "Rename it 'Vegetable'", Scene
@@ -22,14 +21,14 @@ Create the Vegetable Scene, description
 "Add a VisibleOnScreenNotifier2D as a child of 'Vegetable'", Scene
 "Save the scene as 'vegetable.tscn' in the 'scenes' folder", Scene
 
-Create the Sliced Vegetable Scene, description
+Create the Sliced Vegetable Scene, Build the scene for sliced vegetable halves
 "Create a New 2D Scene named sliced_vegetable", FileSystem
 "Swape the root node to a RigidBody2D node (right click node -> change type)", Scene
 "Add a Sprite2D as a child of 'SlicedVegetable'", Scene
 "Add a CollisionShape2D as a child of 'SlicedVegetable'", Scene
 "Give it a circular shape", Inspector
 
-Implement Vegetable Logic, description
+Implement Vegetable Logic, Write the script that handles slicing and missing
 "Open the vegetable scene", FileSystem
 "Attach a new script to the 'Vegetable' root node and name it 'vegetable.gd'", Scene
 "Save the script in the 'scripts' folder", FileSystem
@@ -83,7 +82,7 @@ func _on_screen_exited():
 	queue_free() # Clean up the missed vegetable
 ```
 
-Create the Main Game Scene, description
+Create the Main Game Scene, Set up the main scene to spawn vegetables and handle input
 "Create a New Scene named 'main.tscn'", FileSystem
 "Add a Timer child node, name it 'SpawnTimer'", Scene
 "Set its 'Autostart' property to on", Inspector
@@ -182,7 +181,7 @@ func game_over():
 
 ```
 
-Create the User Interface (UI), description
+Create the User Interface (UI), Build the UI showing score and misses
 "Create a New Scene called 'ui.tscn'", FileSystem
 "Swape the root node to a CanvasLayer node (right click node -> change type)", Scene
 "Add a Label child node and name it 'ScoreLabel'", Scene
@@ -192,7 +191,7 @@ Create the User Interface (UI), description
 "Open the 'main.tscn' scene", FileSystem
 "Instanciate the 'ui.tscn' scene as a child of the 'Main' node (drag and drop the ui.tscn in the Main node)", Scene
 
-Create the Game Over Screen, description
+Create the Game Over Screen, Build the screen that appears when the game ends
 "Create a New Scene called 'game_over_screen", FileSystem
 "Swape the root node to a CanvasLayer node (right click node -> change type)", Scene
 "Go to the Inspector -> Process -> Mode, and set it to 'Always'", Inspector

@@ -12,6 +12,7 @@ Create the Vegetable Scene, description
 "Swape the root node to a RigidBody2D node (right click node -> change type)", Scene
 "Rename it 'Vegetable'", Scene
 "Add a Sprite2D as a child of 'Vegetable'", Scene
+"Drag and drop the image of carrot to the texture section of Sprite2D", Inspector
 "Add a CollisionShape2D as a child of 'Vegetable'", Scene
 "Give it a circular shape", Inspector
 "Add an Area2D as a child of 'Vegetable'", Scene
@@ -141,7 +142,7 @@ func detect_slice():
 	query.collide_with_areas = true
 	query.collide_with_bodies = false
 	var result = space_state.intersect_ray(query)
-	if result and result.collider.is_in_group("vegetables"):
+	if result and result.collider.get_parent().is_in_group("vegetables"):
 		result.collider.get_parent().slice()
 
 func _on_spawn_timer_timeout():
@@ -178,6 +179,7 @@ func game_over():
 	var game_over_instance = GameOverScreen.instantiate()
 	add_child(game_over_instance)
 	game_over_instance.show_final_score(score)
+
 ```
 
 Create the User Interface (UI), description
@@ -197,8 +199,12 @@ Create the Game Over Screen, description
 "Add a ColorRect child", Scene
 "Set it to 'Full Rect' in the Inspector -> Layout menu", Inspector
 "Add a Label child for the 'Game Over' text", Scene
+"Write the text 'Game Over' in the label", Inspector
 "Add a Label child named 'FinalScoreLabel'", Scene
+"Change font color to black for FInalScoreLabel", Inspector
+"Change GameOverLabel font color to red (255, 0, 0)", Inspector
 "Add a Button child named 'RestartButton'", Scene
+"Add the text 'Restart' on the RestartButton", Inspector
 "Attach a new script to the 'GameOverScreen' node and name it 'game_over_screen.gd'", Scene
 "Copy the code in the dock and paste it in 'game_over_screen.gd'", Scene
 ```gdscript
@@ -220,3 +226,4 @@ func _on_restart_button_pressed():
 	# Reload the entire main game scene to start over
 	get_tree().change_scene_to_file("res://scenes/main.tscn")
 ```
+

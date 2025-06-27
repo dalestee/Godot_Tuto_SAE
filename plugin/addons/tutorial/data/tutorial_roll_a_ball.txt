@@ -15,13 +15,12 @@ Project bases, In this part you will have to create the scene, the ground and th
 "Rename it 'Player'", Scene
 "Add a MeshInstance3D node as a child of the 'Player' node", Scene
 "Add a CollisionShape3D node as a child of the 'Player' node", Scene
-"Set the Shape property to SphereShape", Inspector
+"Set the Shape property to SphereShape to both", Inspector
 "Set position of player to (0, 1, 0)", Inspector
-"Put player node on the group 'player' Node->Groups"
+"Put player node on the group 'player' Node -> Groups", Inspector
 
 Player movements, In this part you will add controls to the Player
-"Select the Player node and then click on Attach Script", Scene
-"? Create a new GDScript named PlayerController.gd (copy paste the code in the dock)", FileSystem
+"Select the Player node and then click on Attach Script named PlayerController.gd (copy paste the code in the dock)", Scene
 ```
 extends RigidBody3D
 
@@ -49,9 +48,9 @@ Light, in this part you will put some light!
 
 Camera, In this part you will have to create a Camera that follows the Player
 "Add a Camera3D node as a child of the root node", Scene
-"? Set the Position of the Camera to (0, 5, 10)", Inspector
-"? Set the Rotation of the Camera to (-30, 0, 0)", Inspector
-"Attach a new script CameraController.gd to Scripts node", Scene
+"Set the Position of the Camera to (0, 5, 10)", Inspector
+"Set the Rotation of the Camera to (-30, 0, 0)", Inspector
+"Attach a new script CameraController.gd to Scripts node (copy paste the code in the dock)", Scene
 ```
 extends Node3D
 
@@ -69,13 +68,12 @@ func _process(delta):
 "Assign the Player node and the Camera3D node to the exported variables in the inspector", Inspector
 
 Create the materials, In this part you will create materials and assign them to Ground and Player
-"Create a new StandardMaterial3D resource for the Ground", Inspector
-"Set Albedo Color to (0.51, 0.51, 0.51) [RGB 130,130,130]", Inspector
-"Assign the material to the MeshInstance3D of the Ground", Scene
-"Create a new StandardMaterial3D resource for the Player", Inspector
-"Set Albedo Color to (0, 0.86, 1) [RGB 0,220,255]", Inspector
-"Set Metallic to 0.75 and Roughness to 0.75 (Smoothness 0.25)", Inspector
-"Assign the material to the MeshInstance3D of the Player", Scene
+"Click the MeshInstance3D of the Ground", Scene
+"Click on the Mesh -> Material -> New StandardMaterial3D resource", Inspector
+"Set Albedo Color to [RGB 130,130,130]", Inspector
+"Create a new StandardMaterial3D resource for the Player Mesh the same way as the Ground", Inspector
+"Set Albedo Color to [RGB 0,220,255]", Inspector
+"Set Metallic to 0.75 and Roughness to 0.75", Inspector
 
 Create walls, In this part you will create walls to contain the playfield
 "Add a StaticBody3D node named WestWall", Scene
@@ -83,23 +81,21 @@ Create walls, In this part you will create walls to contain the playfield
 "Add a CollisionShape3D as child of WestWall with BoxMesh", Scene
 "Set WestWall position to (-10, 1, 0)", Inspector
 "Set WestWall scale of WestWall to (0.5, 2, 20.5)", Inspector
-"Create a new StandardMaterial3D for Walls with Albedo color (0.31, 0.31, 0.31) [RGB 79,79,79]", Inspector
-"Assign this material to WestWall's MeshInstance3D", Scene
+"Create a new StandardMaterial3D for Walls with Albedo color [RGB 79,79,79]", Inspector
 "Duplicate WestWall for EastWall at position (10, 1, 0)", Scene
 "Duplicate WestWall for NorthWall at (0, 1, -10) and rotate 90 degrees on Y axis", Scene
 "Duplicate WestWall for SouthWall at (0, 1, 10) and rotate 90 degrees on Y axis", Scene
 
 Create Collectibles, description
-"Create a Scene with a Area3D as root node and name it 'pickups'", Scene
-"Add it to a new group named 'pickups' in the Node tab -> Groups", Inspector
-"Add a MeshInstance3D as a child of 'Pickup' as BoxShape3D", Scene
+"Create a Scene with a Area3D as root node and name it 'pickup'", Scene
+"Add it to a new group named 'pickup' in the Node tab -> Groups", Inspector
+"Add a MeshInstance3D as a child of 'Pickup' as BoxMesh", Scene
 "Add a CollisionShape3D as a child of 'Pickup' as BoxShape3D", Scene
 "Select the 'Pickup' root node. In the Inspector, set its 'Rotation Degrees' to (45, 45, 45) and 'Scale' to (0.5, 0.5, 0.5)", Inspector
 "Create a 'New StandardMaterial3D' for the 'MeshInstance3D' with an Albedo color of (255, 200, 0)", Inspector
 "Select the 'Pickup' (Area3D) node. In the Inspector, under the 'Area3D' category, confirm that the Monitoring property is checked ON.", Inspector
 "Attach a new script named 'pickup.gd' to the 'Pickup' root node", Scene
 "Copy the code in the dock and paste it in 'pickup.gd'", Scene
-"Activate the Signal body_entered on the Pickup object Node->Signals", Inspector
 ```
 # scripts/pickup.gd (New Logic)
 extends Area3D
@@ -117,8 +113,8 @@ func _on_body_entered(body):
 		queue_free() # Destroy the pickup.
 
 ```
-"Save the scene as 'pickup.tscn'", Scene
-"In 'main.tscn', add a 'Node3D' named 'PickupSpawner' and attach the 'pickup_spawner.gd' script to it", Scene
+"Activate the Signal body_entered on the Pickup object Node->Signals", Inspector
+"In 'main.tscn', add a 'Node3D' named 'PickupSpawner' and attach a 'pickup_spawner.gd' script to it (copy paste the code from the dock)", Scene
 ```
 # scripts/pickup_spawner.gd (Updated)
 extends Node3D
@@ -153,8 +149,8 @@ Create the UI, description
 "Create a 'User Interface' scene ('ui.tscn') with a 'CanvasLayer' root", Scene
 "Add a 'Label' named 'ScoreLabel' and another named 'WinLabel'", Scene
 "Anchor 'ScoreLabel' to 'Top Center' and 'WinLabel' to 'Center'", Inspector
-"Save the scene. Instance it in 'main.tscn'", Scene
-"Attach the 'main.gd' script to the 'Main' node in 'main.tscn'", Scene
+"Go back to the main scene and instance the ui scene in it", FileSystem
+"Attach a 'main.gd' script to the root node in 'main.tscn'", Scene
 "Copy the code in the dock and paste it in 'main.gd'", Scene
 ```
 # scripts/main.gd (Updated)

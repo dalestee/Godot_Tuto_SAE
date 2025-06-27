@@ -7,6 +7,7 @@ class_name PopUp
 var description_text: String
 var target_node: Control
 var on_next_callback: Callable
+var on_previous_callback: Callable
 var current_step: int = 1
 var total_steps: int = 1
 
@@ -15,10 +16,11 @@ var total_steps: int = 1
 # This still defines the maximum width before the text starts wrapping.
 @export var max_width: float = 300.0
 
-func _init(desc: String, target: Control, on_next: Callable, step: int = 1, total: int = 1) -> void:
+func _init(desc: String, target: Control, on_next: Callable, on_previous: Callable, step: int = 1, total: int = 1) -> void:
 	description_text = desc
 	target_node = target
 	on_next_callback = on_next
+	on_previous_callback = on_previous
 	current_step = step
 	total_steps = total
 	
@@ -63,6 +65,10 @@ func _ready():
 	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_child(hbox)
 
+	var button2 = Button.new()
+	button2.text = "Previous"
+	button2.pressed.connect(_on_previous_pressed)
+	hbox.add_child(button2)
 	var spacer = Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hbox.add_child(spacer)
@@ -71,6 +77,7 @@ func _ready():
 	button.text = "Next"
 	button.pressed.connect(_on_next_pressed)
 	hbox.add_child(button)
+
 
 
 func calculate_position() -> Vector2:
@@ -106,6 +113,11 @@ func _on_next_pressed():
 	hide()
 	if on_next_callback.is_valid():
 		on_next_callback.call()
+
+func _on_previous_pressed():
+	hide()
+	if on_previous_callback.is_valid():
+		on_previous_callback.call()
 
 func get_stylebox() -> StyleBoxFlat:
 	var sb = StyleBoxFlat.new()

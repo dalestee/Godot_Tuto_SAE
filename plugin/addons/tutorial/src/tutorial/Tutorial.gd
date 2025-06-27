@@ -9,8 +9,7 @@ const TutorialStep := preload("res://addons/tutorial/src/tutorial/TutorialStep.g
 var title: String = ""
 var description: String = ""
 var parts: Array[TutorialPart] = []
-var current_part_idx: int = 0
-var started: bool = false
+var current_part_idx: int = -1
 var codes: Array[String] = []
 
 func _init(tutorial_title: String = "", tutorial_description: String = ""):
@@ -39,7 +38,11 @@ func get_current_step() -> TutorialStep:
 # - true if moved to next step or part
 # - false if tutorial finished
 func next_step() -> TutorialStep:
-	started = true
+	if current_part_idx < 0:
+		current_part_idx = 0
+	if current_part_idx >= parts.size():
+		current_part_idx = -1
+		return null
 	var part = get_part(current_part_idx)
 	if not part:
 		return null
@@ -50,3 +53,15 @@ func next_step() -> TutorialStep:
 		return next_step()
 	
 	return next_part_step
+
+func previous_step() -> TutorialStep:
+	var part = get_part(current_part_idx)
+	if not part:
+		return null
+	
+	var previous_part_step = part.previous_step()
+	if not previous_part_step:
+		current_part_idx -= 1
+		return previous_step()
+	
+	return previous_part_step

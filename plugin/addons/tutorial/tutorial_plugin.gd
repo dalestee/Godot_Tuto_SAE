@@ -35,17 +35,28 @@ func _on_timer_timeout():
 			if content:
 				content.custom_minimum_size.x = dock_width
 
-func _show_next_popup():
-	var step = tutorial.next_step()
+func _show_popup():
+	var step = tutorial.get_current_step()
 	var part = tutorial.get_current_part()
-	if not step or not part: return
+	if not step or not part:
+		_show_dock_infos() 
+		return
 	var node = base_ui.find_child(step.target_node, true, false)
-	var popup = PopUp.new(step.description, node, _show_next_popup, part.current_step_idx+1, part.steps_count())
+	var popup = PopUp.new(step.description, node, _show_next_popup, _show_previous_popup, part.current_step_idx+1, part.steps_count())
 	popups.append(popup)
 
 	base_ui.add_child(popup)
 	_show_dock_infos()
 	
+func _show_previous_popup():
+	tutorial.previous_step()
+	_show_popup()
+
+func _show_next_popup():
+	tutorial.next_step()
+	_show_popup()
+
+
 func _dock_home():
 	var tutorials = loader.list_all_tutorials()
 	
@@ -120,8 +131,7 @@ func _dock_tutorial():
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_row.add_child(title_label)
-
-	if !tutorial.started:
+	if tutorial.current_part_idx < 0 or tutorial.current_part_idx >= tutorial.parts_count():
 		# Description
 		var desc_label = Label.new()
 		desc_label.text = tutorial.description

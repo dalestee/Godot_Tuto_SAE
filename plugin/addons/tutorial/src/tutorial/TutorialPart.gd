@@ -31,3 +31,9 @@ func next_step() -> TutorialStep:
 	if not step: 
 		return null
 	return step
+
+func previous_step() -> TutorialStep:
+	current_step_idx -= 1
+	if current_step_idx < 0:
+		current_step_idx = -1
+	return get_step(current_step_idx)
